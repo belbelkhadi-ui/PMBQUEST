@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMBQUEST – Votre informatique sans dépendance</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #04081a;
+    --bg2: #070d2a;
+    --navy: #0b1340;
+    --blue: #1a2980;
+    --accent: #00e5ff;
+    --green: #39ff14;
+    --white: #e8f4ff;
+    --muted: #7a8faa;
+    --card: #0d1535;
+    --border: rgba(0,229,255,0.15);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: var(--bg);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 3px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 1000;
+    background: rgba(4,8,26,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem; height: 64px;
+  }
+  .logo { font-family: 'Orbitron', monospace; font-weight: 900; font-size: 1.25rem; letter-spacing: 2px; }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--white); text-decoration: none; font-size: .85rem;
+    font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--blue); color: var(--white);
+    border: 1px solid var(--accent);
+    padding: .45rem 1.1rem; border-radius: 4px;
+    font-size: .8rem; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; cursor: pointer;
+    transition: background .2s, box-shadow .2s;
+  }
+  .nav-cta:hover { background: var(--accent); color: var(--bg); box-shadow: 0 0 20px rgba(0,229,255,.4); }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .hamburger span { width: 24px; height: 2px; background: var(--white); transition: .3s; }
+
+  /* ── MOBILE NAV ── */
+  .mobile-menu {
+    display: none; position: fixed; top: 64px; left: 0; width: 100%;
+    background: var(--navy); z-index: 999;
+    flex-direction: column; padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    color: var(--white); text-decoration: none; padding: .85rem 0;
+    font-size: 1rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .mobile-menu a:hover { color: var(--accent); }
+  .mobile-menu .m-cta {
+    margin-top: 1rem; background: var(--blue);
+    border: 1px solid var(--accent); padding: .7rem;
+    text-align: center; border-radius: 4px;
+  }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh; padding-top: 64px;
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+    background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(26,41,128,.45) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 50% at 10% 80%, rgba(0,229,255,.08) 0%, transparent 60%),
+                var(--bg);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px; opacity: .4;
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 1200px; margin: 0 auto; padding: 4rem 2.5rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  }
+  .hero-text h1 {
+    font-family: 'Orbitron', monospace; font-size: clamp(2rem,4vw,3.2rem);
+    font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem;
+  }
+  .hero-text h1 .hl { color: var(--accent); display: block; }
+  .hero-text p {
+    font-size: 1.05rem; line-height: 1.75; color: #b0c8e8; margin-bottom: 2rem;
+  }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--green); color: var(--bg);
+    border: none; padding: .85rem 2rem; border-radius: 4px;
+    font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: .95rem;
+    letter-spacing: 1px; cursor: pointer;
+    box-shadow: 0 0 25px rgba(57,255,20,.3);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(57,255,20,.5); }
+  .btn-outline {
+    background: transparent; color: var(--accent);
+    border: 1px solid var(--accent); padding: .85rem 2rem; border-radius: 4px;
+    font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: .95rem;
+    letter-spacing: 1px; cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  .btn-outline:hover { background: var(--accent); color: var(--bg); }
+  .hero-visual {
+    display: flex; justify-content: center;
+  }
+  .hero-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 2rem; width: 100%; max-width: 380px;
+    box-shadow: 0 0 60px rgba(0,229,255,.08);
+  }
+  .hero-card h3 {
+    font-family: 'Orbitron', monospace; font-size: 1rem; color: var(--accent);
+    margin-bottom: 1.5rem; letter-spacing: 2px;
+  }
+  .cal-header {
+    display: grid; grid-template-columns: repeat(7,1fr);
+    gap: 4px; text-align: center; font-size: .7rem; color: var(--muted);
+    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: .5rem;
+  }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+  .cal-day {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; font-size: .8rem; cursor: pointer; transition: background .2s;
+  }
+  .cal-day.empty { background: transparent; }
+  .cal-day.normal { background: var(--navy); color: var(--muted); }
+  .cal-day.normal:hover { background: var(--blue); color: var(--white); }
+  .cal-day.available { background: rgba(0,229,255,.12); color: var(--accent); border: 1px solid rgba(0,229,255,.3); }
+  .cal-day.available:hover { background: rgba(0,229,255,.25); }
+  .cal-day.selected { background: var(--accent); color: var(--bg); font-weight: 700; }
+  .cal-day.booked { background: rgba(255,50,50,.15); color: #ff6060; cursor: not-allowed; }
+
+  /* ── SECTION BASE ── */
+  section { padding: 5rem 0; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 2.5rem; }
+  .section-title {
+    font-family: 'Orbitron', monospace; font-size: clamp(1.5rem,3vw,2.2rem);
+    font-weight: 900; text-align: center; margin-bottom: 1rem;
+  }
+  .section-sub {
+    text-align: center; color: var(--muted); font-size: 1rem;
+    max-width: 600px; margin: 0 auto 3.5rem;
+    line-height: 1.7;
+  }
+  .accent-line {
+    display: block; width: 60px; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    margin: .75rem auto 0; border-radius: 2px;
+  }
+
+  /* ── SERVICES ── */
+  #services { background: var(--bg2); }
+  .services-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;
+  }
+  .service-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 2rem; position: relative;
+    overflow: hidden; transition: transform .3s, box-shadow .3s;
+  }
+  .service-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    transform: scaleX(0); transition: transform .3s; transform-origin: left;
+  }
+  .service-card:hover { transform: translateY(-4px); box-shadow: 0 8px 40px rgba(0,229,255,.1); }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-icon {
+    width: 48px; height: 48px; background: rgba(0,229,255,.1);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin-bottom: 1.2rem; border: 1px solid var(--border);
+  }
+  .service-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .75rem; }
+  .service-card p { color: var(--muted); font-size: .9rem; line-height: 1.65; margin-bottom: 1rem; }
+  .service-goal {
+    font-size: .8rem; color: var(--green); font-weight: 600;
+    letter-spacing: .5px;
+  }
+  .service-goal::before { content: '→ '; }
+  .btn-sm {
+    display: inline-block; margin-top: 1rem;
+    background: transparent; border: 1px solid var(--accent);
+    color: var(--accent); padding: .4rem .9rem; border-radius: 4px;
+    font-size: .8rem; font-weight: 600; cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  .btn-sm:hover { background: var(--accent); color: var(--bg); }
+
+  /* ── COMPETENCES ── */
+  #competences { background: var(--bg); }
+  .comp-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;
+  }
+  .comp-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden;
+  }
+  .comp-img {
+    height: 160px; object-fit: cover; width: 100%;
+    display: block; filter: brightness(.7) saturate(.8);
+  }
+  .comp-img-placeholder {
+    height: 160px; display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+  }
+  .comp-body { padding: 1.5rem; }
+  .comp-body h3 {
+    font-family: 'Orbitron', monospace; font-size: 1rem; color: var(--accent);
+    margin-bottom: .8rem; letter-spacing: 1px;
+  }
+  .comp-body ul { list-style: none; }
+  .comp-body ul li {
+    color: var(--muted); font-size: .88rem; padding: .25rem 0;
+    padding-left: 1rem; position: relative; line-height: 1.5;
+  }
+  .comp-body ul li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); }
+  .comp-goal {
+    margin-top: 1rem; font-size: .8rem; color: var(--green);
+    font-weight: 600; text-align: right; letter-spacing: .5px;
+  }
+
+  /* ── TUTORIELS ── */
+  #tutoriels { background: var(--bg2); }
+  .tuto-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 2rem;
+  }
+  .tuto-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; display: flex; gap: 1.5rem; padding: 1.5rem;
+    transition: transform .3s;
+  }
+  .tuto-card:hover { transform: translateY(-3px); }
+  .tuto-thumb {
+    width: 100px; flex-shrink: 0; height: 100px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; background: var(--navy);
+  }
+  .tuto-info h3 { font-size: 1rem; font-weight: 700; margin-bottom: .5rem; }
+  .tuto-info p { color: var(--muted); font-size: .87rem; line-height: 1.6; }
+
+  /* ── REALISATIONS ── */
+  #realisations { background: var(--bg); }
+  .real-intro { text-align: center; color: var(--muted); margin-bottom: 3rem; line-height: 1.7; }
+  .real-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 2rem;
+  }
+  .real-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden;
+  }
+  .real-header {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .real-badge {
+    display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; padding: .25rem .65rem; border-radius: 3px; margin-bottom: .6rem;
+  }
+  .badge-pme { background: rgba(0,229,255,.15); color: var(--accent); }
+  .badge-compta { background: rgba(57,255,20,.12); color: var(--green); }
+  .badge-asso { background: rgba(255,150,0,.12); color: #ff9500; }
+  .real-header h3 { font-size: 1rem; font-weight: 700; }
+  .real-body { padding: 1.5rem; }
+  .real-thumb {
+    height: 140px; background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem; border-bottom: 1px solid var(--border);
+  }
+  .real-list { list-style: none; margin-bottom: 1rem; }
+  .real-list li {
+    font-size: .87rem; color: var(--muted); padding: .2rem 0;
+    padding-left: 1rem; position: relative;
+  }
+  .real-list li::before { content: '▸'; position: absolute; left: 0; color: var(--muted); }
+  .real-avantage { font-size: .85rem; }
+  .real-avantage strong { color: var(--green); display: block; margin-bottom: .3rem; font-size: .75rem; letter-spacing: 1px; text-transform: uppercase; }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--bg2); }
+  .contact-wrap {
+    display: grid; grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: start;
+  }
+  .contact-info h3 {
+    font-family: 'Orbitron', monospace; font-size: 1.2rem; margin-bottom: 1rem;
+  }
+  .contact-info p { color: var(--muted); line-height: 1.75; margin-bottom: 1.5rem; }
+  .contact-detail {
+    display: flex; gap: .8rem; align-items: center; margin-bottom: .75rem;
+    color: var(--muted); font-size: .9rem;
+  }
+  .contact-detail .icon { color: var(--accent); font-size: 1.1rem; }
+  .contact-form { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
+  .form-title { font-family: 'Orbitron', monospace; font-size: 1rem; color: var(--accent); margin-bottom: 1.5rem; letter-spacing: 1px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1rem; }
+  .form-group label { font-size: .82rem; color: var(--muted); font-weight: 600; letter-spacing: .5px; }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    background: var(--navy); border: 1px solid var(--border); border-radius: 6px;
+    padding: .7rem 1rem; color: var(--white); font-family: 'Exo 2', sans-serif;
+    font-size: .9rem; transition: border-color .2s;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,229,255,.08);
+  }
+  .form-group select option { background: var(--navy); }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+  .btn-submit {
+    width: 100%; background: var(--blue); color: var(--white);
+    border: 1px solid var(--accent); padding: .9rem; border-radius: 6px;
+    font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 1rem;
+    letter-spacing: 1px; cursor: pointer; transition: background .2s, box-shadow .2s;
+  }
+  .btn-submit:hover { background: var(--accent); color: var(--bg); box-shadow: 0 0 25px rgba(0,229,255,.3); }
+
+  /* ── PAIEMENT ── */
+  #paiement {
+    background: var(--bg);
+    display: none;
+  }
+  #paiement.active { display: block; }
+  .pay-wrap {
+    max-width: 480px; margin: 0 auto;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,229,255,.06);
+  }
+  .pay-header {
+    background: var(--navy); padding: 1.2rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .pay-logo { font-family: 'Orbitron', monospace; font-weight: 900; font-size: .9rem; }
+  .pay-secure {
+    font-size: .72rem; background: rgba(57,255,20,.15); color: var(--green);
+    padding: .25rem .6rem; border-radius: 3px; font-weight: 700; letter-spacing: 1px;
+  }
+  .pay-recap { padding: 1.5rem; border-bottom: 1px solid var(--border); }
+  .pay-recap h4 { font-size: .78rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1rem; }
+  .pay-line { display: flex; justify-content: space-between; font-size: .9rem; margin-bottom: .5rem; }
+  .pay-total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 700; margin-top: .75rem; padding-top: .75rem; border-top: 1px solid var(--border); }
+  .pay-total span:last-child { color: var(--accent); }
+  .pay-form { padding: 1.5rem; }
+  .pay-methods { display: flex; gap: .75rem; margin-bottom: 1.5rem; }
+  .pay-method {
+    flex: 1; padding: .6rem; border: 1px solid var(--border);
+    border-radius: 6px; text-align: center; cursor: pointer;
+    font-size: .8rem; font-weight: 600; color: var(--muted);
+    transition: border-color .2s, color .2s;
+  }
+  .pay-method.active { border-color: var(--accent); color: var(--accent); }
+  .pay-method:hover { border-color: var(--accent); }
+  .pay-footer { text-align: center; font-size: .75rem; color: var(--muted); margin-top: 1rem; }
+
+  /* ── MENTIONS ── */
+  #mentions { background: var(--bg2); display: none; }
+  #mentions.active { display: block; }
+  .mentions-hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    border-radius: 12px; padding: 3rem 2.5rem; margin-bottom: 3rem;
+    display: flex; align-items: center; gap: 2rem;
+  }
+  .mentions-icon { font-size: 4rem; flex-shrink: 0; }
+  .mentions-hero h2 { font-family: 'Orbitron', monospace; font-size: 2rem; }
+  .mentions-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+  }
+  .mention-block {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.5rem;
+  }
+  .mention-block h3 { color: var(--accent); font-size: .95rem; margin-bottom: .75rem; font-weight: 700; }
+  .mention-block p { color: var(--muted); font-size: .87rem; line-height: 1.7; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy); border-top: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .footer-links a {
+    color: var(--muted); text-decoration: none; font-size: .8rem;
+    transition: color .2s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+  .footer-copy { color: var(--muted); font-size: .8rem; }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+    background: var(--card); border: 1px solid var(--green);
+    color: var(--green); padding: 1rem 1.5rem; border-radius: 8px;
+    font-weight: 600; font-size: .9rem;
+    transform: translateY(100px); opacity: 0;
+    transition: all .4s;
+    box-shadow: 0 0 30px rgba(57,255,20,.2);
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── PAGE TRANSITIONS ── */
+  .page { animation: fadeIn .4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero-content { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+    .contact-wrap { grid-template-columns: 1fr; }
+    .mentions-grid { grid-template-columns: 1fr; }
+    .nav-links, .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 0 1.25rem; }
+    .container { padding: 0 1.25rem; }
+    footer { padding: 1.5rem 1.25rem; }
+    .footer-inner { flex-direction: column; align-items: flex-start; }
+    .mentions-hero { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ── -->
+<nav>
+  <div class="logo">PMB<span>QUEST</span></div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#" onclick="showSection('services')">Services</a></li>
+    <li><a href="#" onclick="showSection('competences')">Compétences</a></li>
+    <li><a href="#" onclick="showSection('tutoriels')">Tutoriels</a></li>
+    <li><a href="#" onclick="showSection('realisations')">Réalisations</a></li>
+    <li><a href="#" onclick="showSection('contact')">Contact</a></li>
+  </ul>
+  <button class="nav-cta" onclick="showSection('paiement')">💳 Paiement</button>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#" onclick="showSection('services');toggleMenu()">Services</a>
+  <a href="#" onclick="showSection('competences');toggleMenu()">Compétences</a>
+  <a href="#" onclick="showSection('tutoriels');toggleMenu()">Tutoriels</a>
+  <a href="#" onclick="showSection('realisations');toggleMenu()">Réalisations</a>
+  <a href="#" onclick="showSection('contact');toggleMenu()">Prendre contact</a>
+  <a href="#" class="m-cta" onclick="showSection('paiement');toggleMenu()">💳 Paiement</a>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE : ACCUEIL
+════════════════════════════════════════════ -->
+<div id="page-home" class="page">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Votre informatique<span class="hl">enfin sans dépendance.</span></h1>
+        <p>Vous en avez assez des abonnements, des logiciels que vous ne comprenez pas, d'être otage d'un système opaque ? Je m'appelle <strong>Pierre-Marie BOUTIN</strong>, informaticien de métier. Je vous accompagne vers des solutions libres, transparentes et durables — sans jargon, sans contrat caché.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="showSection('contact')">Prendre rendez-vous</button>
+          <button class="btn-outline" onclick="showSection('services')">Découvrir mes services</button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card">
+          <h3>📅 Choisissez votre créneau</h3>
+          <div class="cal-header">
+            <span>LUN</span><span>MAR</span><span>MER</span>
+            <span>JEU</span><span>VEN</span><span>SAM</span><span>DIM</span>
+          </div>
+          <div class="cal-grid" id="calendar"></div>
+          <p style="font-size:.75rem;color:var(--muted);margin-top:1rem;text-align:center">
+            🟦 Disponible &nbsp; 🔴 Réservé &nbsp; ✅ Sélectionné
+          </p>
+          <button class="btn-primary" style="width:100%;margin-top:1rem;font-size:.85rem" onclick="bookSlot()">
+            Confirmer le créneau
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES APERÇU -->
+  <section id="services-preview" style="padding:4rem 0;background:var(--bg)">
+    <div class="container">
+      <h2 class="section-title">Des services clairs <span style="color:var(--accent)">sans mauvaise surprise</span></h2>
+      <span class="accent-line"></span>
+      <p class="section-sub" style="margin-top:1.2rem">Je travaille en toute transparence. Avant chaque intervention, je vous explique ce que je vais faire, pourquoi, et combien ça va coûter. Pas de forfaits opaques, pas de facturation à l'heure sans visibilité.</p>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">🔧</div>
+          <h3>Conseil open source</h3>
+          <p>Alternatives libres aux outils propriétaires coûteux. Audit de vos besoins, recommandations personnalisées, accompagnement à la migration.</p>
+          <span class="service-goal">Réduire vos coûts logiciels</span>
+          <button class="btn-sm" onclick="showSection('services')">En savoir plus</button>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">📚</div>
+          <h3>Formation Numérique</h3>
+          <p>Maîtrisez vos outils informatiques au quotidien. Sessions individuelles ou en groupe, adaptées à votre niveau et vos besoins concrets.</p>
+          <span class="service-goal">Gagner en autonomie</span>
+          <button class="btn-sm" onclick="showSection('services')">En savoir plus</button>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🛡️</div>
+          <h3>Assistance Informative</h3>
+          <p>Dépannage, diagnostic, optimisation. Je comprends votre situation et vous propose des solutions durables, pas des rustines.</p>
+          <span class="service-goal">Vous rendre autonome</span>
+          <button class="btn-sm" onclick="showSection('services')">En savoir plus</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-home -->
+
+<!-- ═══════════════════════════════════════════
+     PAGE : SERVICES
+════════════════════════════════════════════ -->
+<div id="page-services" class="page" style="display:none;padding-top:64px">
+  <section id="services" style="padding:5rem 0">
+    <div class="container">
+      <h2 class="section-title">Mes <span style="color:var(--accent)">Services</span></h2>
+      <span class="accent-line"></span>
+      <p class="section-sub" style="margin-top:1.2rem">Solutions informatiques adaptées aux particuliers et petites structures. Tout est clair, documenté et à prix fixe.</p>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">🖥️</div>
+          <h3>Installation & Configuration</h3>
+          <p>Mise en place de systèmes Windows ou Linux, configuration réseau, paramétrage sécurisé de vos postes de travail et serveurs.</p>
+          <span class="service-goal">Garantir stabilité et performance</span>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🔒</div>
+          <h3>Sécurisation</h3>
+          <p>Audit de sécurité, pare-feu, antivirus, sensibilisation aux bonnes pratiques, sauvegardes et plan de reprise d'activité (PRA).</p>
+          <span class="service-goal">Protéger vos données</span>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🌐</div>
+          <h3>Développement Web</h3>
+          <p>Création de sites vitrine et e-commerce. HTML, CSS, JavaScript, PHP et bases de données. SEO et performance inclus.</p>
+          <span class="service-goal">Créer des sites modernes et efficaces</span>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🐧</div>
+          <h3>Logiciels Libres</h3>
+          <p>Migration vers LibreOffice, Nextcloud, Linux et autres solutions open source. Personnalisation et adaptation à vos usages.</p>
+          <span class="service-goal">Solutions économiques et durables</span>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">📊</div>
+          <h3>Conseil & Audit</h3>
+          <p>Évaluation de votre infrastructure existante, recommandations priorisées, feuille de route claire et budgétisée.</p>
+          <span class="service-goal">Prendre les bonnes décisions</span>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🎓</div>
+          <h3>Formation</h3>
+          <p>Ateliers adaptés à votre niveau : bureautique, internet sécurisé, outils collaboratifs, gestion de fichiers et sauvegardes.</p>
+          <span class="service-goal">Gagner en autonomie numérique</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE : COMPÉTENCES
+════════════════════════════════════════════ -->
+<div id="page-competences" class="page" style="display:none;padding-top:64px">
+  <section id="competences" style="padding:5rem 0">
+    <div class="container">
+      <h2 class="section-title">Mes <span style="color:var(--accent)">Compétences</span></h2>
+      <span class="accent-line"></span>
+      <p class="section-sub" style="margin-top:1.2rem">Des expertises concrètes, acquises sur le terrain, au service de vos besoins quotidiens.</p>
+      <div class="comp-grid">
+        <div class="comp-card">
+          <div class="comp-img-placeholder" style="background:linear-gradient(135deg,#0b1340,#1a2980)">🖥️</div>
+          <div class="comp-body">
+            <h3>Systèmes</h3>
+            <ul>
+              <li>Installation et configuration (Windows, Linux)</li>
+              <li>Administration de serveurs (utilisateurs, sauvegardes, mises à jour)</li>
+              <li>Infrastructure réseau (LAN, VPN, pare-feu)</li>
+              <li>Supervision et maintenance des systèmes</li>
+            </ul>
+            <p class="comp-goal">Objectif : Garantir la stabilité et la performance des infrastructures</p>
+          </div>
+        </div>
+        <div class="comp-card">
+          <div class="comp-img-placeholder" style="background:linear-gradient(135deg,#0d1535,#1a4060)">🛡️</div>
+          <div class="comp-body">
+            <h3>Cybersécurité</h3>
+            <ul>
+              <li>Audit de sécurité des systèmes et réseaux</li>
+              <li>Mise en place de solutions de protection (pare-feu, antivirus, chiffrement)</li>
+              <li>Sensibilisation aux bonnes pratiques</li>
+              <li>Gestion des sauvegardes et plan de reprise d'activité</li>
+            </ul>
+            <p class="comp-goal">Objectif : Protéger les données et prévenir les cyberattaques</p>
+          </div>
+        </div>
+        <div class="comp-card">
+          <div class="comp-img-placeholder" style="background:linear-gradient(135deg,#0b1340,#004060)">🌐</div>
+          <div class="comp-body">
+            <h3>Développement Web</h3>
+            <ul>
+              <li>Création de sites vitrine et e-commerce</li>
+              <li>Front-end (HTML, CSS, JavaScript)</li>
+              <li>Back-end (PHP, bases de données)</li>
+              <li>Optimisation SEO et performance</li>
+            </ul>
+            <p class="comp-goal">Objectif : Créer des sites modernes, rapides et efficaces</p>
+          </div>
+        </div>
+        <div class="comp-card">
+          <div class="comp-img-placeholder" style="background:linear-gradient(135deg,#0b2010,#1a4020)">🐧</div>
+          <div class="comp-body">
+            <h3>Logiciels Libres</h3>
+            <ul>
+              <li>Installation et configuration de solutions open source</li>
+              <li>Migration vers Linux, LibreOffice, etc.</li>
+              <li>Conseil pour réduire les coûts logiciels</li>
+              <li>Personnalisation et adaptation des outils</li>
+            </ul>
+            <p class="comp-goal">Objectif : Solutions économiques, flexibles et durables</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE : TUTORIELS
+════════════════════════════════════════════ -->
+<div id="page-tutoriels" class="page" style="display:none;padding-top:64px">
+  <section id="tutoriels" style="padding:5rem 0">
+    <div class="container">
+      <h2 class="section-title">Tutos : <span style="color:var(--accent)">Adopter de meilleures pratiques</span></h2>
+      <span class="accent-line"></span>
+      <p class="section-sub" style="margin-top:1.2rem">Des tutoriels accessibles à tous pour mieux maîtriser le numérique au quotidien.</p>
+      <div class="tuto-grid">
+        <div class="tuto-card">
+          <div class="tuto-thumb">🔐</div>
+          <div class="tuto-info">
+            <h3>Adopter les bonnes pratiques informatiques</h3>
+            <p>Améliorez votre sécurité et vos performances grâce à des conseils simples et efficaces. Découvrez les bonnes pratiques essentielles pour protéger vos données.</p>
+          </div>
+        </div>
+        <div class="tuto-card">
+          <div class="tuto-thumb">🐧</div>
+          <div class="tuto-info">
+            <h3>Mieux connaître l'open source</h3>
+            <p>Découvrez le fonctionnement de l'open source et ses nombreux avantages. Comprenez comment ces solutions peuvent améliorer votre quotidien numérique.</p>
+          </div>
+        </div>
+        <div class="tuto-card">
+          <div class="tuto-thumb">🛡️</div>
+          <div class="tuto-info">
+            <h3>Importance de la cyber sécurité</h3>
+            <p>Protégez vos données et votre environnement numérique face aux menaces en ligne. Comprenez les enjeux et adoptez les bons réflexes au quotidien.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE : RÉALISATIONS
+════════════════════════════════════════════ -->
+<div id="page-realisations" class="page" style="display:none;padding-top:64px">
+  <section id="realisations" style="padding:5rem 0">
+    <div class="container">
+      <h2 class="section-title">Mes <span style="color:var(--accent)">Réalisations</span></h2>
+      <span class="accent-line"></span>
+      <p class="section-sub" style="margin-top:1.2rem">Exemples concrets d'accompagnements réalisés auprès de clients. Des solutions adaptées, mises en place dans le respect total de la confidentialité.</p>
+      <div class="real-grid">
+        <div class="real-card">
+          <div class="real-thumb">🏭</div>
+          <div class="real-body">
+            <div class="real-header" style="padding:0;border:none">
+              <span class="real-badge badge-pme">PME locale</span>
+              <h3>Optimisation d'un système informatique</h3>
+            </div>
+            <br>
+            <ul class="real-list">
+              <li>Audit complet de l'infrastructure</li>
+              <li>Migration vers un serveur plus performant</li>
+              <li>Mise en place de sauvegardes automatiques</li>
+              <li>Optimisation du réseau interne</li>
+            </ul>
+            <div class="real-avantage">
+              <strong>Avantage</strong>
+              +40% de performance · Réduction des pannes · Gain de temps pour les équipes
+            </div>
+          </div>
+        </div>
+        <div class="real-card">
+          <div class="real-thumb">💼</div>
+          <div class="real-body">
+            <span class="real-badge badge-compta">Cabinet comptable</span>
+            <h3>Sécurisation d'un système</h3>
+            <br>
+            <ul class="real-list">
+              <li>Audit de sécurité</li>
+              <li>Installation d'un pare-feu et antivirus pro</li>
+              <li>Mise en place d'un système de sauvegarde sécurisé</li>
+              <li>Formation des employés (phishing, mots de passe)</li>
+            </ul>
+            <div class="real-avantage">
+              <strong>Avantage</strong>
+              Données sécurisées · Risques fortement réduits · Conformité RGPD améliorée
+            </div>
+          </div>
+        </div>
+        <div class="real-card">
+          <div class="real-thumb">🤝</div>
+          <div class="real-body">
+            <span class="real-badge badge-asso">Association</span>
+            <h3>Migration vers des logiciels libres</h3>
+            <br>
+            <ul class="real-list">
+              <li>Migration vers Linux</li>
+              <li>Installation LibreOffice et outils open source</li>
+              <li>Formation des utilisateurs</li>
+              <li>Support technique</li>
+            </ul>
+            <div class="real-avantage">
+              <strong>Avantage</strong>
+              Réduction des coûts logiciels · Outils adaptés · Solution durable
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE : CONTACT
+════════════════════════════════════════════ -->
+<div id="page-contact" class="page" style="display:none;padding-top:64px">
+  <section id="contact" style="padding:5rem 0">
+    <div class="container">
+      <h2 class="section-title">Prendre <span style="color:var(--accent)">Contact</span></h2>
+      <span class="accent-line"></span>
+      <p class="section-sub" style="margin-top:1.2rem">Une question, un projet ? Je réponds sous 24h.</p>
+      <div class="contact-wrap">
+        <div class="contact-info">
+          <h3>Parlons de votre projet</h3>
+          <p>Décrivez votre situation, vos besoins ou les problèmes que vous rencontrez. Je vous contacte rapidement pour faire le point ensemble, sans engagement.</p>
+          <div class="contact-detail"><span class="icon">📧</span> contact@pmbquest.fr</div>
+          <div class="contact-detail"><span class="icon">📍</span> Bourgogne – France</div>
+          <div class="contact-detail"><span class="icon">⏱️</span> Réponse sous 24h</div>
+          <div style="margin-top:2rem">
+            <button class="btn-primary" onclick="showSection('rdv')">📅 Prendre rendez-vous</button>
+          </div>
+        </div>
+        <div class="contact-form">
+          <p class="form-title">Fiche contact</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Prénom</label>
+              <input type="text" placeholder="Jean" id="f-prenom">
+            </div>
+            <div class="form-group">
+              <label>Nom</label>
+              <input type="text" placeholder="Dupont" id="f-nom">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" placeholder="jean.dupont@email.fr" id="f-email">
+          </div>
+          <div class="form-group">
+            <label>Sujet</label>
+            <select id="f-sujet">
+              <option value="">Choisir un sujet…</option>
+              <option>Conseil & Audit</option>
+              <option>Sécurité</option>
+              <option>Développement web</option>
+              <option>Formation</option>
+              <option>Logiciels libres</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Votre demande</label>
+            <textarea placeholder="Décrivez votre situation…" id="f-demande"></textarea>
+          </div>
+          <button class="btn-submit" onclick="sendContact()">Envoyer →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE : RDV (calendrier pleine page)
+════════════════════════════════════════════ -->
+<div id="page-rdv" class="page" style="display:none;padding-top:64px">
+  <section style="padding:5rem 0">
+    <div class="container">
+      <h2 class="section-title">Choisissez votre <span style="color:var(--accent)">créneau</span></h2>
+      <span class="accent-line"></span>
+      <p class="section-sub" style="margin-top:1.2rem">Je m'occupe du reste.</p>
+      <div style="max-width:420px;margin:0 auto">
+        <div class="hero-card">
+          <h3>📅 Mars 2026</h3>
+          <div class="cal-header">
+            <span>LUN</span><span>MAR</span><span>MER</span>
+            <span>JEU</span><span>VEN</span><span>SAM</span><span>DIM</span>
+          </div>
+          <div class="cal-grid" id="calendar2"></div>
+          <div class="form-group" style="margin-top:1.5rem">
+            <label>Nom complet</label>
+            <input type="text" placeholder="Jean Dupont" id="rdv-nom">
+          </div>
+          <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" placeholder="jean@email.fr" id="rdv-email">
+          </div>
+          <div class="form-group">
+            <label>Type d'intervention</label>
+            <select id="rdv-type">
+              <option>Consultation IT — 2h</option>
+              <option>Audit open source</option>
+              <option>Formation</option>
+              <option>Dépannage</option>
+            </select>
+          </div>
+          <button class="btn-primary" style="width:100%" onclick="bookRdv()">Confirmer le rendez-vous</button>
+          <p style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:.75rem">Paiement sécurisé via CB, PayPal ou virement</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE : PAIEMENT
+════════════════════════════════════════════ -->
+<div id="page-paiement" class="page" style="display:none;padding-top:64px">
+  <section style="padding:5rem 0">
+    <div class="container">
+      <h2 class="section-title" style="margin-bottom:2.5rem">💳 <span style="color:var(--accent)">Paiement sécurisé</span></h2>
+      <div class="pay-wrap">
+        <div class="pay-header">
+          <span class="pay-logo">PMB<span style="color:var(--accent)">QUEST</span></span>
+          <span class="pay-secure">🔒 SÉCURISÉ</span>
+        </div>
+        <div class="pay-recap">
+          <h4>Récapitulatif</h4>
+          <div class="pay-line"><span>Consultation IT — 2h</span><span>180 €</span></div>
+          <div class="pay-line"><span>Audit open source</span><span>90 €</span></div>
+          <div class="pay-total"><span>Total TTC</span><span>270,00 €</span></div>
+        </div>
+        <div class="pay-form">
+          <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;font-weight:600;letter-spacing:1px;text-transform:uppercase">Méthode de paiement</p>
+          <div class="pay-methods">
+            <div class="pay-method active" onclick="selectPay(this)">💳 CB</div>
+            <div class="pay-method" onclick="selectPay(this)">🅿️ PayPal</div>
+            <div class="pay-method" onclick="selectPay(this)">🏦 Virement</div>
+          </div>
+          <div class="form-group">
+            <label>Numéro de carte</label>
+            <input type="text" placeholder="4242 4242 4242 4242" maxlength="19" id="pay-card" oninput="formatCard(this)">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Expiration</label>
+              <input type="text" placeholder="MM/AA" maxlength="5" id="pay-exp" oninput="formatExp(this)">
+            </div>
+            <div class="form-group">
+              <label>CVV</label>
+              <input type="password" placeholder="•••" maxlength="3" id="pay-cvv">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Nom sur la carte</label>
+            <input type="text" placeholder="Jean Dupont" id="pay-name">
+          </div>
+          <button class="btn-submit" onclick="processPay()">PAYER 270,00 € →</button>
+          <p class="pay-footer">🔒 Paiement sécurisé SSL / 3D Secure<br>Vos données sont chiffrées et sécurisées.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE : MENTIONS LÉGALES
+════════════════════════════════════════════ -->
+<div id="page-mentions" class="page" style="display:none;padding-top:64px">
+  <section style="padding:5rem 0">
+    <div class="container">
+      <div class="mentions-hero">
+        <div class="mentions-icon">⚖️</div>
+        <div>
+          <h2>Mentions légales</h2>
+          <p style="color:var(--muted);margin-top:.5rem">PMBQUEST — Informaticien indépendant</p>
+        </div>
+      </div>
+      <div class="mentions-grid">
+        <div class="mention-block">
+          <h3>Rédaction du site internet</h3>
+          <p>Pierre-Marie BOUTIN – PMBQUEST<br>Informaticien de métier et consultant indépendant.</p>
+        </div>
+        <div class="mention-block">
+          <h3>Hébergeur du site internet</h3>
+          <p>OVHcloud – 2 rue Kellermann, 59100 Roubaix, France</p>
+        </div>
+        <div class="mention-block">
+          <h3>Respect de la propriété intellectuelle</h3>
+          <p>Tous les contenus présents sur ce site (textes, images, logos) sont la propriété exclusive de PMBQUEST, sauf mention contraire. Toute reproduction sans autorisation est interdite.</p>
+        </div>
+        <div class="mention-block">
+          <h3>Développement, intégration, hébergement et diffusion</h3>
+          <p>Site développé par Pierre-Marie BOUTIN. Technologies utilisées : HTML5, CSS3, JavaScript.</p>
+        </div>
+        <div class="mention-block" style="grid-column:1/-1">
+          <h3>Edition du site internet</h3>
+          <p>PMBQUEST est une entreprise individuelle. Responsable de la publication : Pierre-Marie BOUTIN. Contact : contact@pmbquest.fr</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE : POLITIQUE DE CONFIDENTIALITÉ
+════════════════════════════════════════════ -->
+<div id="page-confidentialite" class="page" style="display:none;padding-top:64px">
+  <section style="padding:5rem 0">
+    <div class="container">
+      <div class="mentions-hero" style="background:linear-gradient(135deg,#0d1535,#1a2980)">
+        <div class="mentions-icon">🔐</div>
+        <div>
+          <h2>Politique de confidentialité</h2>
+          <p style="color:var(--muted);margin-top:.5rem">Politique RGPD</p>
+        </div>
+      </div>
+      <div class="mentions-grid">
+        <div class="mention-block">
+          <h3>→ Qui est responsable de la collecte de mes données ?</h3>
+          <p>Pierre-Marie BOUTIN – PMBQUEST. Contact : contact@pmbquest.fr</p>
+        </div>
+        <div class="mention-block">
+          <h3>→ Qu'est-ce qu'une donnée personnelle ?</h3>
+          <p>Toute information permettant d'identifier directement ou indirectement une personne physique (nom, email, adresse IP…).</p>
+        </div>
+        <div class="mention-block">
+          <h3>→ D'où proviennent mes données ?</h3>
+          <p>Uniquement des formulaires de contact que vous remplissez volontairement sur ce site.</p>
+        </div>
+        <div class="mention-block">
+          <h3>→ Quelles sont les bases légales des traitements ?</h3>
+          <p>Consentement de l'utilisateur pour les demandes de contact. Obligation légale pour la facturation.</p>
+        </div>
+        <div class="mention-block">
+          <h3>→ À qui sont destinées ces données ?</h3>
+          <p>Vos données ne sont jamais vendues, cédées ni transmises à des tiers à des fins commerciales.</p>
+        </div>
+        <div class="mention-block">
+          <h3>→ Pour quelles raisons vos données sont collectées ?</h3>
+          <p>Uniquement pour vous répondre dans le cadre de votre demande de contact ou de rendez-vous.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <div class="logo" style="font-size:1rem">PMB<span style="color:var(--accent)">QUEST</span></div>
+    <div class="footer-links">
+      <a href="#" onclick="showSection('home')">Accueil</a>
+      <a href="#" onclick="showSection('mentions')">Mentions légales</a>
+      <a href="#" onclick="showSection('confidentialite')">Politique de confidentialité</a>
+      <a href="#" onclick="showSection('services')">Conditions générales d'utilisation</a>
+      <a href="#" onclick="showSection('services')">CGV</a>
+      <a href="#" onclick="showSection('paiement')">Moyens de paiement acceptés</a>
+    </div>
+    <p class="footer-copy">© 2026 PMBQUEST – Tous droits réservés</p>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div id="toast">✅ Message envoyé avec succès !</div>
+
+<script>
+// ── CALENDAR ──
+const calDays2026 = {
+  available: [3,5,10,12,17,19,24,26],
+  booked: [7,14,21],
+  selected: null
+};
+
+function buildCal(id, data) {
+  const grid = document.getElementById(id);
+  if (!grid) return;
+  // March 2026: starts on Sunday (day 0) → offset = 6 for Mon-start
+  const offset = 6;
+  for (let i = 0; i < offset; i++) {
+    const d = document.createElement('div');
+    d.className = 'cal-day empty'; grid.appendChild(d);
+  }
+  for (let d = 1; d <= 31; d++) {
+    const el = document.createElement('div');
+    let cls = 'normal';
+    if (data.booked.includes(d)) cls = 'booked';
+    else if (data.available.includes(d)) cls = 'available';
+    if (data.selected === d) cls = 'selected';
+    el.className = 'cal-day ' + cls;
+    el.textContent = d;
+    if (cls !== 'booked') el.onclick = () => selectDay(id, d);
+    grid.appendChild(el);
+  }
+}
+
+function selectDay(calId, day) {
+  if (calDays2026.booked.includes(day)) return;
+  calDays2026.selected = day;
+  const grid = document.getElementById(calId);
+  grid.innerHTML = '';
+  buildCal(calId, calDays2026);
+}
+
+function bookSlot() {
+  if (!calDays2026.selected) { showToast('⚠️ Veuillez sélectionner un créneau'); return; }
+  showToast('📅 Créneau réservé pour le ' + calDays2026.selected + ' mars !');
+}
+function bookRdv() {
+  const n = document.getElementById('rdv-nom')?.value;
+  const e = document.getElementById('rdv-email')?.value;
+  if (!n || !e) { showToast('⚠️ Merci de remplir tous les champs'); return; }
+  if (!calDays2026.selected) { showToast('⚠️ Veuillez choisir une date'); return; }
+  showToast('✅ RDV confirmé pour le ' + calDays2026.selected + ' mars !');
+}
+
+buildCal('calendar', calDays2026);
+
+// ── SECTION ROUTER ──
+const pages = ['home','services','competences','tutoriels','realisations','contact','rdv','paiement','mentions','confidentialite'];
+function showSection(name) {
+  pages.forEach(p => {
+    const el = document.getElementById('page-' + p);
+    if (el) el.style.display = (p === name) ? 'block' : 'none';
+  });
+  if (name === 'rdv') buildCal('calendar2', calDays2026);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── CONTACT ──
+function sendContact() {
+  const p = document.getElementById('f-prenom')?.value;
+  const e = document.getElementById('f-email')?.value;
+  const d = document.getElementById('f-demande')?.value;
+  if (!p || !e || !d) { showToast('⚠️ Merci de remplir tous les champs'); return; }
+  showToast('✅ Message envoyé ! Je vous réponds sous 24h.');
+}
+
+// ── PAYMENT ──
+function selectPay(el) {
+  document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('active'));
+  el.classList.add('active');
+}
+function formatCard(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,16);
+  el.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+function formatExp(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,4);
+  if (v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2);
+  el.value = v;
+}
+function processPay() {
+  const c = document.getElementById('pay-card')?.value;
+  const n = document.getElementById('pay-name')?.value;
+  if (!c || !n) { showToast('⚠️ Merci de remplir vos informations de paiement'); return; }
+  showToast('✅ Paiement de 270,00 € traité avec succès !');
+}
+
+// ── MOBILE MENU ──
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
